@@ -54,6 +54,8 @@ export default class Visualizer extends React.Component {
     constructor(props) {
         super(props);
         
+        this.mySorter = React.createRef()
+
         this.state = {
             numArray: [],
             arrayLength: 50,
@@ -62,6 +64,10 @@ export default class Visualizer extends React.Component {
 
     componentDidMount() {
         this.resetArray();
+        setTimeout(() => {
+          console.log(this.mySorter.current.offsetWidth)
+        }, 0)
+        
     }
 
     resetArray() {
@@ -81,11 +87,12 @@ export default class Visualizer extends React.Component {
 
         return (
             <div className="container">
-                <div className="sorter">
+                <div className="sorter" ref={this.mySorter}>
                     {numArray.map((value, idx) => (
-                        <div>{value}</div>
+                        <div 
+                          className="column"
+                          style={{height: `${value}%` }}></div>
                     ))}
-                    {arrayLength}
                 </div>
                 <div className="menu">
                 <Button 
@@ -94,7 +101,12 @@ export default class Visualizer extends React.Component {
                     onClick={() => {this.resetArray()}}>
                     Generate Array
                 </Button>
-                <div className="lengthContainer">
+                <div className="length-container">
+                    <Typography 
+                        id="array-length-slider" 
+                        gutterBottom>
+                        Array length
+                    </Typography>
                     <Slider  
                         onChange = {(e, value) => {this.setState({arrayLength: value})}}
                         valueLabelDisplay="auto" 
@@ -107,13 +119,13 @@ export default class Visualizer extends React.Component {
                         max={100}
                         marks={arrayLengthMarks}
                     />
-                    <Typography 
-                        id="array-length-slider" 
-                        gutterBottom>
-                        Array length
-                    </Typography>
                 </div>
-                <div className="speedContainer">
+                <div className="speed-container">
+                <   Typography 
+                        id="speed-slider" 
+                        gutterBottom>
+                        Speed
+                    </Typography>
                     <Slider  
                         valueLabelDisplay="auto" 
                         aria-labelledby="array-length-slider"
@@ -124,11 +136,6 @@ export default class Visualizer extends React.Component {
                         max={100}
                         marks={speedMarks}
                     />
-                    <Typography 
-                        id="speed-slider" 
-                        gutterBottom>
-                        Speed
-                    </Typography>
                 </div>
 
                 <Button variant="contained" color="primary">
