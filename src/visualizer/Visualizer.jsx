@@ -1,12 +1,9 @@
 import React from 'react';
 import Button from '@material-ui/core/Button'
-import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
-import Tooltip from '@material-ui/core/Tooltip';
+import { bubbleSortAnimation } from './../SortingAlgorithms/SortingAlgorithms.js' 
 import './Visualizer.css';
-
-
 
   const arrayLengthMarks = [
     {
@@ -46,6 +43,10 @@ import './Visualizer.css';
     },
   ];
 
+  const PRIMARY_COLOR = 'lightgrey';
+  const SORTING_COLOR = '#17a2b8';
+  const FINAL_COLOR = '#28a745'
+
   function valuetext(value) {
     return `${value}`;
   }
@@ -64,10 +65,6 @@ export default class Visualizer extends React.Component {
 
     componentDidMount() {
         this.resetArray();
-        setTimeout(() => {
-          console.log(this.mySorter.current.offsetWidth)
-        }, 0)
-        
     }
 
     resetArray() {
@@ -81,6 +78,36 @@ export default class Visualizer extends React.Component {
         this.setState({numArray})
     }
 
+    bubbleSort(){
+        const numArray = this.state.numArray;
+        const animations = bubbleSortAnimation(numArray);
+        const animationsLength = numArray.length;
+        const arrayBars = document.getElementsByClassName('bar');
+        for( let i = 0; i < animations; i++) {
+            arrayBars[animations[i][0]].style.backgroundColor = SORTING_COLOR;
+            arrayBars[animations[i][1]].style.backgroundColor = SORTING_COLOR;
+            if (animations[i][2]) {
+                setTimeout(() => {
+                    this.setState(prevState => {
+                        let numArray = [...prevState.numArray];
+                    
+                        let temp = numArray[animations[i][1]];
+                        numArray[animations[i][0]] = numArray[animations[i][1]];
+                        numArray[animations[i][1]] = temp;
+                    
+                        return { numArray };
+                    })
+                }, animations[i][0] * 100)
+
+            } else {
+                this.setState({numArray})
+            }
+
+            // this.setState({numArray});
+            arrayBars[animations[i][0]].style.backgroundColor = PRIMARY_COLOR;
+            arrayBars[animations[i][1]].style.backgroundColor = PRIMARY_COLOR;
+        }
+    }
 
     render() {
         const { numArray, arrayLength } = this.state;
@@ -90,8 +117,12 @@ export default class Visualizer extends React.Component {
                 <div className="sorter" ref={this.mySorter}>
                     {numArray.map((value, idx) => (
                         <div 
-                          className="column"
-                          style={{height: `${value}%` }}></div>
+                          key={idx}
+                          className="bar"
+                          style={{
+                              height: `${value}%`,
+                              backgroundColor: PRIMARY_COLOR, 
+                            }}></div>
                     ))}
                 </div>
                 <div className="menu">
@@ -112,7 +143,6 @@ export default class Visualizer extends React.Component {
                         valueLabelDisplay="auto" 
                         aria-labelledby="array-length-slider"
                         getAriaValueText={valuetext}
-                        defaultValue={arrayLength} 
                         value={arrayLength}
                         step={1}
                         min={1}
@@ -138,7 +168,10 @@ export default class Visualizer extends React.Component {
                     />
                 </div>
 
-                <Button variant="contained" color="primary">
+                <Button 
+                    variant="contained" 
+                    color="primary"
+                    onClick={() => {this.bubbleSort()}}>
                     Bubble Sort
                 </Button>
                 </div>

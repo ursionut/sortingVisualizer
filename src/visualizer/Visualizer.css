@@ -30,11 +30,9 @@
     max-width: calc(100vw - 60px);
 }
 
-.column{
+.bar{
     margin: 0 1px;
-    background-color: lightgrey;
     width: 10px;
-    height: 20%;
 }
 
 .length-container, .speed-container{
