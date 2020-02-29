@@ -43,9 +43,10 @@ import './Visualizer.css';
     },
   ];
 
-  const PRIMARY_COLOR = 'lightgrey';
-  const SORTING_COLOR = '#17a2b8';
-  const FINAL_COLOR = '#28a745'
+  const UNSORTED_COLOR = 'lightgrey';
+  const ACTIVE_COLOR = '#17a2b8';
+  const COMPARED_COLOR = 'red';
+  const SORTED_COLOR = '#28a745'
 
   function valuetext(value) {
     return `${value}`;
@@ -59,7 +60,7 @@ export default class Visualizer extends React.Component {
 
         this.state = {
             numArray: [],
-            arrayLength: 50,
+            arrayLength: 10,
         };
     }
 
@@ -78,36 +79,25 @@ export default class Visualizer extends React.Component {
         this.setState({numArray})
     }
 
-    bubbleSort(){
-        const numArray = this.state.numArray;
-        const animations = bubbleSortAnimation(numArray);
-        const animationsLength = numArray.length;
-        const arrayBars = document.getElementsByClassName('bar');
-        for( let i = 0; i < animations; i++) {
-            arrayBars[animations[i][0]].style.backgroundColor = SORTING_COLOR;
-            arrayBars[animations[i][1]].style.backgroundColor = SORTING_COLOR;
-            if (animations[i][2]) {
-                setTimeout(() => {
-                    this.setState(prevState => {
-                        let numArray = [...prevState.numArray];
-                    
-                        let temp = numArray[animations[i][1]];
-                        numArray[animations[i][0]] = numArray[animations[i][1]];
-                        numArray[animations[i][1]] = temp;
-                    
-                        return { numArray };
-                    })
-                }, animations[i][0] * 100)
-
-            } else {
-                this.setState({numArray})
-            }
-
-            // this.setState({numArray});
-            arrayBars[animations[i][0]].style.backgroundColor = PRIMARY_COLOR;
-            arrayBars[animations[i][1]].style.backgroundColor = PRIMARY_COLOR;
-        }
-    }
+    bubbleSort = () => {
+      let animations = bubbleSortAnimation(this.state.numArray);
+      let len = animations.length;
+      let arrayColumns = document.getElementsByClassName('array-column');
+      console.log(animations)
+      console.log(arrayColumns);
+      for(let i = 0; i < len; i++) {
+        setTimeout(() => {
+          if(i % 2 === 0) {
+            // arrayColumns[animations[i][0]].style.backgroundColor = ACTIVE_COLOR;
+            // arrayColumns[animations[i][1]].style.backgroundColor = SORTED_COLOR;
+          } else {
+            this.setState({
+              numArray: animations[i]
+            })
+          }
+        }, i * 100);        
+      } 
+    } 
 
     render() {
         const { numArray, arrayLength } = this.state;
@@ -118,10 +108,10 @@ export default class Visualizer extends React.Component {
                     {numArray.map((value, idx) => (
                         <div 
                           key={idx}
-                          className="bar"
+                          className="array-column"
                           style={{
                               height: `${value}%`,
-                              backgroundColor: PRIMARY_COLOR, 
+                              backgroundColor: UNSORTED_COLOR, 
                             }}></div>
                     ))}
                 </div>

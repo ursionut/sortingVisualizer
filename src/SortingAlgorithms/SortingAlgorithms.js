@@ -8,19 +8,14 @@ export function bubbleSortAnimation(numArray) {
 function bubbleSort(numArray, animations) {
     let arrayLength = numArray.length;
     for (let i = 0; i < arrayLength; i++) {
-        for( let j = 0; j < arrayLength; j++) {
+        for( let j = 0; j < arrayLength - i - 1; j++) {
+            animations.push([j, j + 1]);
             if(numArray[j] > numArray[j + 1]){
-                if(j < arrayLength - 1) {
-                    animations.push([j, j + 1, true]);
-                }
                 let temp = numArray[j];
                 numArray[j] = numArray[j + 1];
                 numArray[j + 1] = temp;
-            } else {
-                if(j < arrayLength - 1) {
-                    animations.push([j, j + 1, false]);
-                }
-            }
+            } 
+            animations.push([...numArray]); 
         }
     }
 }
